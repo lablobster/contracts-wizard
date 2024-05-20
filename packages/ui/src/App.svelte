@@ -1,16 +1,16 @@
 <script lang="ts">
   import type {
-    Contract,
-    Kind,
-    KindedOptions,
-    OptionsErrorMessages,
+      Contract,
+      Kind,
+      KindedOptions,
+      OptionsErrorMessages,
   } from "@openzeppelin/wizard";
   import {
-    ContractBuilder,
-    OptionsError,
-    buildGeneric,
-    printContract,
-    sanitizeKind,
+      ContractBuilder,
+      OptionsError,
+      buildGeneric,
+      printContract,
+      sanitizeKind,
   } from "@openzeppelin/wizard";
   import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
   import { saveAs } from "file-saver";
@@ -35,8 +35,8 @@
   import { injectHyperlinks } from "./utils/inject-hyperlinks";
 
   import { getAccount, reconnect } from "@wagmi/core";
+  import { ethers } from "ethers";
   import { rollux } from "viem/chains";
-  // import { ethers } from "ethers";
 
   const dispatch = createEventDispatcher();
   export let initialTab: string | undefined = "ERC20";
@@ -106,7 +106,7 @@
         console.log("Compilation successful", compiledContract);
 
         // Save the bytecode and ABI in variables
-        compiledBytecode = compiledContract.evm.deployedBytecode.object;
+        compiledBytecode = compiledContract.evm.bytecode.object;
         compiledAbi = compiledContract.abi;
         compiled = true;
         compiling = false;
@@ -120,6 +120,8 @@
       compiling = false;
     }
   };
+  
+  let deploying = false;
 
   const handleDeploy = async () => {
     try {
@@ -128,28 +130,40 @@
         return;
       }
 
-      // if (!window.ethereum) {
-      //   console.error("No Ethereum provider found. Install MetaMask.");
-      //   return;
-      // }
-      // console.log(window.ethereum);
-      // await window.ethereum.request({ method: "eth_requestAccounts" });
-      // console.log(123);
-      // const provider = new ethers.providers.Web3Provider(window.ethereum);
-      // console.log("provider", await provider.getSigner());
-      // const signer = provider.getSigner();
+      if (!window.ethereum) {
+        console.error("No Ethereum provider found. Install MetaMask.");
+        return;
+      }
 
-      // const factory = new ethers.ContractFactory(
-      //   compiledAbi,
-      //   compiledBytecode,
-      //   signer
-      // );
-      // const contract = await factory.deploy();
-      // await contract.waitForDeployment();
+      deploying = true;
 
-      // console.log("Contract deployed at address:", await contract.getAddress());
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      
+      const gasLimit = 3000000;
+      
+      const factory = new ethers.ContractFactory(compiledAbi, compiledBytecode, signer);
+      const contract = await factory.deploy({ gasLimit });
+
+      await contract.waitForDeployment();
+
+      console.log("Contract deployed at address:", contract.address);
+      deploying = false;
     } catch (error) {
       console.error("Deployment error:", error);
+      if (error.code === ethers.errors.INSUFFICIENT_FUNDS) {
+        console.error("Insufficient funds for gas.");
+      } else if (error.code === ethers.errors.NONCE_EXPIRED) {
+        console.error("Nonce has expired.");
+      } else if (error.code === ethers.errors.REPLACEMENT_UNDERPRICED) {
+        console.error("Replacement transaction underpriced.");
+      } else if (error.code === ethers.errors.UNPREDICTABLE_GAS_LIMIT) {
+        console.error("Unpredictable gas limit.");
+      } else {
+        console.error("Unknown error.");
+      }
+      deploying = false;
     }
   };
 
@@ -286,12 +300,16 @@
       <button
         class="action-button min-w-[165px]"
         on:click={compiled ? handleDeploy : compileHandler}
-        disabled={compiling}
+        disabled={compiling || deploying}
       >
         {#if compiling}
           Compiling...
         {:else if compiled}
-          Deploy
+          {#if deploying}
+           Deploying...
+          {:else}
+            Deploy
+          {/if}
         {:else}
           Compile
         {/if}
