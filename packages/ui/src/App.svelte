@@ -12,6 +12,7 @@
       printContract,
       sanitizeKind,
   } from "@openzeppelin/wizard";
+  import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';
   import { saveAs } from "file-saver";
   import { createEventDispatcher } from "svelte";
   import CustomControls from "./CustomControls.svelte";
@@ -32,6 +33,9 @@
   import { postConfig } from "./post-config";
   import { remixURL } from "./remix";
   import { injectHyperlinks } from "./utils/inject-hyperlinks";
+
+  import { getAccount, reconnect } from "@wagmi/core";
+  import { rollux } from 'viem/chains';
 
   const dispatch = createEventDispatcher();
   export let initialTab: string | undefined = "ERC20";
@@ -183,9 +187,32 @@
       };
     }
   };
+
+  // TODO: change this project ID to new project with connectwallet 
+  const projectId = '2053d40d3bf13ea57900bec9780661ee'
+  const metadata = {
+    name: 'Web3Modal',
+    description: 'Web3Modal Example',
+    url: 'https://web3modal.com', // origin must match your domain & subdomain
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
+  }
+
+  const chains = [rollux] as const
+  const config = defaultWagmiConfig({
+    chains,
+    projectId,
+    metadata,
+  })
+
+  reconnect(config)
+
+  createWeb3Modal({ wagmiConfig: config, projectId })
+
+  const isConnected = getAccount(config).isConnected
 </script>
 
 <div class="container flex flex-col gap-4 p-4">
+ 
   <div class="header flex flex-row justify-between">
     <div class="tab overflow-hidden">
       <OverflowMenu>
@@ -222,6 +249,7 @@
       </OverflowMenu>
     </div>
     <div class="action flex flex-row gap-2 shrink-0">
+      <w3m-button balance={'hide'} loadingLabel={'Loading ...'} />
       <button
         class="action-button min-w-[165px]"
         on:click={compiled ? handleDeploy : compileHandler}
@@ -235,6 +263,7 @@
           Compile
         {/if}
       </button>
+     
       <button class="action-button min-w-[165px]" on:click={copyHandler}>
         {#if copied}
           <CheckIcon />

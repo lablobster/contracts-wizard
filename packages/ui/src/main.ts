@@ -1,13 +1,13 @@
 import './styles/global.css';
 
-import type {} from 'svelte';
-import App from './App.svelte';
-import CairoApp from './cairo/App.svelte';
-import { postMessage } from './post-message';
-import UnsupportedVersion from './UnsupportedVersion.svelte';
-import semver from 'semver';
 import { compatibleContractsSemver as compatibleSolidityContractsSemver } from '@openzeppelin/wizard';
 import { compatibleContractsSemver as compatibleCairoContractsSemver } from '@openzeppelin/wizard-cairo';
+import semver from 'semver';
+import type { } from 'svelte';
+import App from './App.svelte';
+import UnsupportedVersion from './UnsupportedVersion.svelte';
+import CairoApp from './cairo/App.svelte';
+import { postMessage } from './post-message';
 
 function postResize() {
   const { height } = document.documentElement.getBoundingClientRect();

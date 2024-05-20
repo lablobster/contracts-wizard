@@ -16,10 +16,10 @@
     "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/file-saver": "^2.0.1",
-    "@types/resize-observer-browser": "^0.1.5",
-    "@types/uuid": "^9.0.0",
     "@types/node": "^18.0.0",
+    "@types/resize-observer-browser": "^0.1.5",
     "@types/semver": "^7.5.7",
+    "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.2",
     "path-browserify": "^1.0.1",
     "postcss": "^8.2.8",
@@ -37,14 +37,22 @@
     "typescript": "^4.9.0"
   },
   "dependencies": {
+    "@metamask/providers": "^16.1.0",
+    "@wagmi/connectors": "^5.0.2",
+    "@wagmi/core": "^2.10.2",
+    "@web3modal/wagmi": "^4.2.1",
+    "ethers": "^6.12.1",
     "file-saver": "^2.0.5",
     "highlight.js": "^11.0.0",
     "highlightjs-cairo": "^0.4.0",
     "highlightjs-solidity": "^2.0.0",
+    "semver": "^7.6.0",
     "sirv-cli": "^2.0.0",
     "tippy.js": "^6.3.1",
     "util": "^0.12.4",
     "uuid": "^9.0.0",
-    "semver": "^7.6.0"
+    "viem": "^2.10.11",
+    "wagmi": "^2.9.2",
+    "web3modal": "^1.9.12"
   }
 }
