@@ -34,7 +34,7 @@
   import { remixURL } from "./remix";
   import { injectHyperlinks } from "./utils/inject-hyperlinks";
 
-  import { getAccount, reconnect } from "@wagmi/core";
+  import { reconnect } from "@wagmi/core";
   import { ethers } from "ethers";
   import { rollux } from "viem/chains";
 
@@ -256,7 +256,6 @@
   reconnect(config);
 
   createWeb3Modal({ wagmiConfig: config, projectId });
-  const isConnected = getAccount(config).isConnected;
 </script>
 
 <div class="container flex flex-col gap-4 p-4">
@@ -428,7 +427,7 @@
 
 <style lang="postcss">
   .container {
-    background-color: var(--gray-1);
+    background-color: var(--gray-6);
     border: 1px solid var(--gray-2);
     border-radius: 10px;
     min-width: 32rem;
@@ -437,7 +436,7 @@
     font-size: var(--text-small);
   }
   .tab {
-    color: var(--gray-5);
+    color: var(--gray-4);
   }
   .tab button,
   .action-button,
@@ -454,10 +453,11 @@
   }
   .tab button:hover,
   :global(.overflow-btn):hover {
-    background-color: var(--gray-2);
+    background-color: var(--solidity-blue-1);
+    color: white;
   }
   .tab button.selected {
-    background-color: var(--solidity-blue-2);
+    background-color: var(--solidity-blue-1);
     color: white;
     order: -1;
   }
@@ -484,7 +484,7 @@
     }
   }
   .controls {
-    background-color: white;
+    background-color: var(--gray-3);
     padding: var(--size-4);
   }
   .controls,

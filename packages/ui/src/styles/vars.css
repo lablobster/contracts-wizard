@@ -5,7 +5,7 @@
 
   /* Colors */
 
-  --text-color: #333333;
+  --text-color: #252525;
 
   --gray-1: #f9fafb;
   --gray-2: #eff1f3;
@@ -26,8 +26,8 @@
   --red-2: #f53d3d;
   --red-3: #aa0909;
   
-  --solidity-blue-1: #51d4ff;
-  --solidity-blue-2: #4e5de4;
+  --solidity-blue-1: #804ee4;
+  --solidity-blue-2: #5721c3;
 
   --cairo-orange-1: #fe9149;
   --cairo-orange-2: #fe4a3c;

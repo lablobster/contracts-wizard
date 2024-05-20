@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, afterUpdate } from 'svelte';
+  import { afterUpdate, onMount } from 'svelte';
 
   import Tooltip from './Tooltip.svelte';
   import MenuDownIcon from './icons/MenuDownIcon.svelte';
