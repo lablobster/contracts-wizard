@@ -1,18 +1,18 @@
 <script lang="ts">
   import type {
-      Contract,
-      Kind,
-      KindedOptions,
-      OptionsErrorMessages,
+    Contract,
+    Kind,
+    KindedOptions,
+    OptionsErrorMessages,
   } from "@openzeppelin/wizard";
   import {
-      ContractBuilder,
-      OptionsError,
-      buildGeneric,
-      printContract,
-      sanitizeKind,
+    ContractBuilder,
+    OptionsError,
+    buildGeneric,
+    printContract,
+    sanitizeKind,
   } from "@openzeppelin/wizard";
-  import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';
+  import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
   import { saveAs } from "file-saver";
   import { createEventDispatcher } from "svelte";
   import CustomControls from "./CustomControls.svelte";
@@ -35,7 +35,8 @@
   import { injectHyperlinks } from "./utils/inject-hyperlinks";
 
   import { getAccount, reconnect } from "@wagmi/core";
-  import { rollux } from 'viem/chains';
+  import { rollux } from "viem/chains";
+  // import { ethers } from "ethers";
 
   const dispatch = createEventDispatcher();
   export let initialTab: string | undefined = "ERC20";
@@ -86,6 +87,9 @@
     }, 1000);
   };
 
+  let compiledBytecode: string | undefined;
+  let compiledAbi: any[] | undefined;
+
   const compileHandler = async () => {
     try {
       compiling = true;
@@ -100,6 +104,10 @@
       if (response.ok) {
         const compiledContract = await response.json();
         console.log("Compilation successful", compiledContract);
+
+        // Save the bytecode and ABI in variables
+        compiledBytecode = compiledContract.evm.deployedBytecode.object;
+        compiledAbi = compiledContract.abi;
         compiled = true;
         compiling = false;
       } else {
@@ -113,9 +121,36 @@
     }
   };
 
-  const handleDeploy = () => {
-    console.log("Deploying contract...");
-    // Implement deployment logic here
+  const handleDeploy = async () => {
+    try {
+      if (!compiledBytecode || !compiledAbi) {
+        console.error("Contract is not compiled yet.");
+        return;
+      }
+
+      // if (!window.ethereum) {
+      //   console.error("No Ethereum provider found. Install MetaMask.");
+      //   return;
+      // }
+      // console.log(window.ethereum);
+      // await window.ethereum.request({ method: "eth_requestAccounts" });
+      // console.log(123);
+      // const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // console.log("provider", await provider.getSigner());
+      // const signer = provider.getSigner();
+
+      // const factory = new ethers.ContractFactory(
+      //   compiledAbi,
+      //   compiledBytecode,
+      //   signer
+      // );
+      // const contract = await factory.deploy();
+      // await contract.waitForDeployment();
+
+      // console.log("Contract deployed at address:", await contract.getAddress());
+    } catch (error) {
+      console.error("Deployment error:", error);
+    }
   };
 
   const remixHandler = async (e: MouseEvent) => {
@@ -188,31 +223,29 @@
     }
   };
 
-  // TODO: change this project ID to new project with connectwallet 
-  const projectId = '2053d40d3bf13ea57900bec9780661ee'
+  // TODO: change this project ID to new project with connectwallet
+  const projectId = "2053d40d3bf13ea57900bec9780661ee";
   const metadata = {
-    name: 'Web3Modal',
-    description: 'Web3Modal Example',
-    url: 'https://web3modal.com', // origin must match your domain & subdomain
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  }
+    name: "Web3Modal",
+    description: "Web3Modal Example",
+    url: "https://web3modal.com", // origin must match your domain & subdomain
+    icons: ["https://avatars.githubusercontent.com/u/37784886"],
+  };
 
-  const chains = [rollux] as const
+  const chains = [rollux] as const;
   const config = defaultWagmiConfig({
     chains,
     projectId,
     metadata,
-  })
+  });
 
-  reconnect(config)
+  reconnect(config);
 
-  createWeb3Modal({ wagmiConfig: config, projectId })
-
-  const isConnected = getAccount(config).isConnected
+  createWeb3Modal({ wagmiConfig: config, projectId });
+  const isConnected = getAccount(config).isConnected;
 </script>
 
 <div class="container flex flex-col gap-4 p-4">
- 
   <div class="header flex flex-row justify-between">
     <div class="tab overflow-hidden">
       <OverflowMenu>
@@ -249,7 +282,7 @@
       </OverflowMenu>
     </div>
     <div class="action flex flex-row gap-2 shrink-0">
-      <w3m-button balance={'hide'} loadingLabel={'Loading ...'} />
+      <w3m-button balance={"hide"} loadingLabel={"Loading ..."} />
       <button
         class="action-button min-w-[165px]"
         on:click={compiled ? handleDeploy : compileHandler}
@@ -263,7 +296,6 @@
           Compile
         {/if}
       </button>
-     
       <button class="action-button min-w-[165px]" on:click={copyHandler}>
         {#if copied}
           <CheckIcon />
@@ -447,11 +479,11 @@
     flex-direction: row;
     justify-content: flex-end;
     color: var(--gray-5);
-    margin-top: var(--size-3);
-    padding: 0 var(--size-2);
-    font-size: var(--text-small);
+    margin-top: var (--size-3);
+    padding: 0 var (--size-2);
+    font-size: var (--text-small);
     & > * + * {
-      margin-left: var(--size-3);
+      margin-left: var (--size-3);
     }
     :global(.icon) {
       margin-right: 0.2em;
@@ -461,13 +493,13 @@
       color: inherit;
       text-decoration: none;
       &:hover {
-        color: var(--text-color);
+        color: var (--text-color);
       }
     }
   }
   .download-option {
     display: flex;
-    padding: var(--size-2);
+    padding: var (--size-2);
     text-align: left;
     background: none;
     border: 1px solid transparent;
@@ -481,7 +513,7 @@
     }
     &:hover,
     &:focus {
-      background-color: var(--gray-1);
+      background-color: var (--gray-1);
       border: 1px solid var(--gray-3);
     }
     & div {
@@ -497,7 +529,7 @@
       font-weight: bold;
     }
     & > :not(:first-child) {
-      margin-top: var(--size-1);
+      margin-top: var (--size-1);
       color: var (--gray-5);
     }
   }
