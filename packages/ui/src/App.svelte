@@ -1,16 +1,16 @@
 <script lang="ts">
   import type {
-      Contract,
-      Kind,
-      KindedOptions,
-      OptionsErrorMessages,
+    Contract,
+    Kind,
+    KindedOptions,
+    OptionsErrorMessages,
   } from "@openzeppelin/wizard";
   import {
-      ContractBuilder,
-      OptionsError,
-      buildGeneric,
-      printContract,
-      sanitizeKind,
+    ContractBuilder,
+    OptionsError,
+    buildGeneric,
+    printContract,
+    sanitizeKind,
   } from "@openzeppelin/wizard";
   import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
   import { saveAs } from "file-saver";
@@ -93,7 +93,7 @@
   const compileHandler = async () => {
     try {
       compiling = true;
-      const response = await fetch("http://localhost:3000/compile", {
+      const response = await fetch("https://api.metio.lat/compile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@
       compiling = false;
     }
   };
-  
+
   let deploying = false;
 
   const handleDeploy = async () => {
@@ -140,10 +140,14 @@
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-      
+
       const gasLimit = 3000000;
-      
-      const factory = new ethers.ContractFactory(compiledAbi, compiledBytecode, signer);
+
+      const factory = new ethers.ContractFactory(
+        compiledAbi,
+        compiledBytecode,
+        signer
+      );
       const contract = await factory.deploy({ gasLimit });
 
       await contract.waitForDeployment();
@@ -294,7 +298,7 @@
           Compiling...
         {:else if compiled}
           {#if deploying}
-           Deploying...
+            Deploying...
           {:else}
             Deploy
           {/if}
@@ -336,7 +340,7 @@
             rel="noopener noreferrer">OpenZeppelin Upgrades</a
           >.
           <br />
-          <a href="#" on:click={remixHandler}>Open in Remix anyway</a>.
+          <!-- <a on:click={remixHandler}>Open in Remix anyway</a>. -->
         </div>
       </Tooltip>
       <Dropdown let:active>
@@ -481,7 +485,7 @@
     border-radius: 5px;
     box-shadow: var(--shadow);
   }
-  .controls-footer {
+  /* .controls-footer {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -503,7 +507,7 @@
         color: var (--text-color);
       }
     }
-  }
+  } */
   .download-option {
     display: flex;
     padding: var (--size-2);

@@ -3,7 +3,10 @@
   let active = false;
 
   const handleFocusout = (e: FocusEvent) => {
-    if (active && (!e.relatedTarget || !dropdownElement.contains(e.relatedTarget as Node))) {
+    if (
+      active &&
+      (!e.relatedTarget || !dropdownElement.contains(e.relatedTarget as Node))
+    ) {
       active = false;
     }
   };
@@ -15,7 +18,7 @@
   };
 
   const handleKeydown = (e: KeyboardEvent) => {
-    if (active && e.key === 'Escape') {
+    if (active && e.key === "Escape") {
       active = false;
     }
   };
@@ -23,7 +26,13 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="dropdown" bind:this={dropdownElement} on:focusout={handleFocusout} on:click={handleClick}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div
+  class="dropdown"
+  bind:this={dropdownElement}
+  on:focusout={handleFocusout}
+  on:click={handleClick}
+>
   <slot name="button"></slot>
 
   <div class="dropdown-items" class:active>
