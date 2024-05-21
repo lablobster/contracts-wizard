@@ -152,17 +152,6 @@
       deploying = false;
     } catch (error) {
       console.error("Deployment error:", error);
-      if (error.code === ethers.errors.INSUFFICIENT_FUNDS) {
-        console.error("Insufficient funds for gas.");
-      } else if (error.code === ethers.errors.NONCE_EXPIRED) {
-        console.error("Nonce has expired.");
-      } else if (error.code === ethers.errors.REPLACEMENT_UNDERPRICED) {
-        console.error("Replacement transaction underpriced.");
-      } else if (error.code === ethers.errors.UNPREDICTABLE_GAS_LIMIT) {
-        console.error("Unpredictable gas limit.");
-      } else {
-        console.error("Unknown error.");
-      }
       deploying = false;
     }
   };
