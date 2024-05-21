@@ -35,47 +35,55 @@ onDOMContentLoaded(function () {
   const wizards = document.querySelectorAll<HTMLElement>('oz-wizard');
   console.log("Found oz-wizard elements:", wizards);
 
-  for (const w of wizards) {
-    w.style.display = 'block';
+  if (wizards.length > 0) {
+    const w = wizards[0];
+    console.log('w', w)
+    if (w) {
+      w.style.display = 'block';
 
-    const src = new URL('embed', currentScript.origin);
+      const src = new URL('embed', currentScript.origin);
 
-    setSearchParam(w, src.searchParams, 'data-lang', 'lang');
-    setSearchParam(w, src.searchParams, 'data-tab', 'tab');
-    setSearchParam(w, src.searchParams, 'version', 'version');
-    const sync = w.getAttribute('data-sync-url');
+      setSearchParam(w, src.searchParams, 'data-lang', 'lang');
+      setSearchParam(w, src.searchParams, 'data-tab', 'tab');
+      setSearchParam(w, src.searchParams, 'version', 'version');
+      const sync = w.getAttribute('data-sync-url');
 
-    if (sync === 'fragment') {
-      const fragment = window.location.hash.replace('#', '');
-      if (fragment) {
-        src.searchParams.set('tab', fragment);
-      }
-    }
-
-    const iframe = document.createElement('iframe');
-    iframe.src = src.toString();
-    iframe.style.display = 'block';
-    iframe.style.border = '0';
-    iframe.style.width = '100%';
-    iframe.style.height = 'calc(100vh - 158px)';
-
-    w.appendChild(iframe);
-    console.log("Appended iframe:", iframe);
-
-    if (iframe.contentWindow !== null) {
-      iframes.set(iframe.contentWindow, iframe);
-    }
-
-    if (sync === 'fragment') {
-      window.addEventListener('message', (e: MessageEvent<Message>) => {
-        if (e.source && e.data.kind === 'oz-wizard-tab-change') {
-          if (iframe === iframes.get(e.source)) {
-            window.location.hash = e.data.tab;
-            console.log("Updated URL fragment:", e.data.tab);
-          }
+      if (sync === 'fragment') {
+        const fragment = window.location.hash.replace('#', '');
+        if (fragment) {
+          src.searchParams.set('tab', fragment);
         }
-      });
+      }
+
+      const iframe = document.createElement('iframe');
+      iframe.src = src.toString();
+      iframe.style.display = 'block';
+      iframe.style.border = '0';
+      iframe.style.width = '100%';
+      iframe.style.height = 'calc(100vh - 158px)';
+
+      w.appendChild(iframe);
+      console.log("Appended iframe:", iframe);
+
+      if (iframe.contentWindow !== null) {
+        iframes.set(iframe.contentWindow, iframe);
+      }
+
+      if (sync === 'fragment') {
+        window.addEventListener('message', (e: MessageEvent<Message>) => {
+          if (e.source && e.data.kind === 'oz-wizard-tab-change') {
+            if (iframe === iframes.get(e.source)) {
+              window.location.hash = e.data.tab;
+              console.log("Updated URL fragment:", e.data.tab);
+            }
+          }
+        });
+      }
+    } else {
+      console.error('No oz-wizard element found.');
     }
+  } else {
+    console.error('No oz-wizard elements found in the document.');
   }
 });
 
