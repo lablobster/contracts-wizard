@@ -1,16 +1,16 @@
 <script lang="ts">
   import type {
-    Contract,
-    Kind,
-    KindedOptions,
-    OptionsErrorMessages,
+      Contract,
+      Kind,
+      KindedOptions,
+      OptionsErrorMessages,
   } from "@openzeppelin/wizard";
   import {
-    ContractBuilder,
-    OptionsError,
-    buildGeneric,
-    printContract,
-    sanitizeKind,
+      ContractBuilder,
+      OptionsError,
+      buildGeneric,
+      printContract,
+      sanitizeKind,
   } from "@openzeppelin/wizard";
   import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
   import { saveAs } from "file-saver";
@@ -149,10 +149,8 @@
         signer
       );
       const contract = await factory.deploy({ gasLimit });
-
       await contract.waitForDeployment();
 
-      console.log("Contract deployed at address:", contract.address);
       deploying = false;
     } catch (error) {
       console.error("Deployment error:", error);
@@ -485,29 +483,7 @@
     border-radius: 5px;
     box-shadow: var(--shadow);
   }
-  /* .controls-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    color: var(--gray-5);
-    margin-top: var (--size-3);
-    padding: 0 var (--size-2);
-    font-size: var (--text-small);
-    & > * + * {
-      margin-left: var (--size-3);
-    }
-    :global(.icon) {
-      margin-right: 0.2em;
-      opacity: 0.8;
-    }
-    a {
-      color: inherit;
-      text-decoration: none;
-      &:hover {
-        color: var (--text-color);
-      }
-    }
-  } */
+
   .download-option {
     display: flex;
     padding: var (--size-2);

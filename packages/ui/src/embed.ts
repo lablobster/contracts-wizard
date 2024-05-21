@@ -12,17 +12,20 @@ let unsupportedVersion: boolean = false;
 const unsupportedVersionFrameHeight = 'auto';
 
 window.addEventListener('message', function (e: MessageEvent<Message>) {
+  console.log("Received message:", e.data);
   if (e.source) {
     if (e.data.kind === 'oz-wizard-unsupported-version') {
       unsupportedVersion = true;
       const iframe = iframes.get(e.source);
       if (iframe) {
         iframe.style.height = unsupportedVersionFrameHeight;
+        console.log("Set iframe height to unsupportedVersionFrameHeight:", unsupportedVersionFrameHeight);
       }
     } else if (e.data.kind === 'oz-wizard-resize') {
       const iframe = iframes.get(e.source);
       if (iframe) {
         iframe.style.height = unsupportedVersion ? unsupportedVersionFrameHeight : 'calc(100vh - 158px)';
+        console.log("Set iframe height to:", iframe.style.height);
       }
     }
   }
@@ -30,6 +33,7 @@ window.addEventListener('message', function (e: MessageEvent<Message>) {
 
 onDOMContentLoaded(function () {
   const wizards = document.querySelectorAll<HTMLElement>('oz-wizard');
+  console.log("Found oz-wizard elements:", wizards);
 
   for (const w of wizards) {
     w.style.display = 'block';
@@ -56,6 +60,7 @@ onDOMContentLoaded(function () {
     iframe.style.height = 'calc(100vh - 158px)';
 
     w.appendChild(iframe);
+    console.log("Appended iframe:", iframe);
 
     if (iframe.contentWindow !== null) {
       iframes.set(iframe.contentWindow, iframe);
@@ -66,12 +71,14 @@ onDOMContentLoaded(function () {
         if (e.source && e.data.kind === 'oz-wizard-tab-change') {
           if (iframe === iframes.get(e.source)) {
             window.location.hash = e.data.tab;
+            console.log("Updated URL fragment:", e.data.tab);
           }
         }
       });
     }
   }
 });
+
 
 function setSearchParam(w: HTMLElement, searchParams: URLSearchParams, dataParam: string, param: string) {
   const value = w.getAttribute(dataParam) ?? w.getAttribute(param);
@@ -88,4 +95,4 @@ function onDOMContentLoaded(callback: () => void) {
   }
 }
 
-export {};
+export { };
