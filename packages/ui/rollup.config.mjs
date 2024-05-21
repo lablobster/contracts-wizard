@@ -12,7 +12,7 @@ import proc from "child_process";
 import events from "events";
 import serve from "./rollup.server.mjs";
 
-const production = true;
+const production = false;
 
 process.env.NODE_ENV = production ? "production" : "development";
 
