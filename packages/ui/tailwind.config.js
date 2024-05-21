@@ -4,8 +4,7 @@ module.exports = {
 
     // Using glob patterns results in infinite loop
     "./public/index.html",
-    // './public/cairo.html',
-    // './public/embed.html',
+    "./public/embed.html",
   ],
 
   theme: {
