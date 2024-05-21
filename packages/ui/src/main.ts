@@ -1,10 +1,10 @@
 import './styles/global.css';
 
 import { compatibleContractsSemver as compatibleSolidityContractsSemver } from '@openzeppelin/wizard';
-import semver from 'semver';
+// import semver from 'semver';
 import type { } from 'svelte';
 import App from './App.svelte';
-import UnsupportedVersion from './UnsupportedVersion.svelte';
+// import UnsupportedVersion from './UnsupportedVersion.svelte';
 // import CairoApp from './cairo/App.svelte';
 import { postMessage } from './post-message';
 
@@ -27,14 +27,14 @@ const requestedVersion = params.get('version') ?? undefined;
 let compatibleVersionSemver = compatibleSolidityContractsSemver;
 
 let app;
-if (requestedVersion && !semver.satisfies(requestedVersion, compatibleVersionSemver)) {
-  postMessage({ kind: 'oz-wizard-unsupported-version' });
-  app = new UnsupportedVersion({ target: document.body, props: { requestedVersion, compatibleVersionSemver } });
-  // } else if (lang === 'cairo') {
-  //   app = new CairoApp({ target: document.body, props: { initialTab } });
-} else {
-  app = new App({ target: document.body, props: { initialTab } });
-}
+// if (requestedVersion && !semver.satisfies(requestedVersion, compatibleVersionSemver)) {
+//   postMessage({ kind: 'oz-wizard-unsupported-version' });
+//   app = new UnsupportedVersion({ target: document.body, props: { requestedVersion, compatibleVersionSemver } });
+//   // } else if (lang === 'cairo') {
+//   //   app = new CairoApp({ target: document.body, props: { initialTab } });
+// } else {
+app = new App({ target: document.body, props: { initialTab } });
+// }
 
 app.$on('tab-change', (e: CustomEvent) => {
   postMessage({ kind: 'oz-wizard-tab-change', tab: e.detail.toLowerCase() });
