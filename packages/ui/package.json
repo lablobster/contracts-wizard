@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "rollup -c",
+    "build": "ROLLUP_WATCH=0 rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
     "validate": "svelte-check"
