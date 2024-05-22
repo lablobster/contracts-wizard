@@ -8,43 +8,19 @@ const currentScript = new URL(document.currentScript.src);
 
 const iframes = new WeakMap<MessageEventSource, HTMLIFrameElement>();
 
-let unsupportedVersion: boolean = false;
-const unsupportedVersionFrameHeight = 'auto';
-
-window.addEventListener('message', function (e: MessageEvent<Message>) {
-  console.log("Received message:", e.data);
-  if (e.source) {
-    if (e.data.kind === 'oz-wizard-unsupported-version') {
-      unsupportedVersion = true;
-      const iframe = iframes.get(e.source);
-      if (iframe) {
-        iframe.style.height = unsupportedVersionFrameHeight;
-        console.log("Set iframe height to unsupportedVersionFrameHeight:", unsupportedVersionFrameHeight);
-      }
-    } else if (e.data.kind === 'oz-wizard-resize') {
-      const iframe = iframes.get(e.source);
-      if (iframe) {
-        iframe.style.height = unsupportedVersion ? unsupportedVersionFrameHeight : 'calc(100vh - 158px)';
-        console.log("Set iframe height to:", iframe.style.height);
-      }
-    }
-  }
-});
-
 onDOMContentLoaded(function () {
   const wizards = document.querySelectorAll<HTMLElement>('oz-wizard');
-  console.log("Found oz-wizard elements:", wizards);
 
   if (wizards.length > 0) {
     const w = wizards[0];
     console.log('w', w);
 
     if (w) {
-      // Verifique se já existe um iframe dentro do elemento oz-wizard
+      // Verifique se já existe um iframe dentro do elemento oz-wizard e o remova
       const existingIframe = w.querySelector('iframe');
       if (existingIframe) {
-        console.log("Iframe already exists:", existingIframe);
-        return;
+        console.log("Removing existing iframe:", existingIframe);
+        w.removeChild(existingIframe);
       }
 
       w.style.display = 'block';
@@ -71,7 +47,7 @@ onDOMContentLoaded(function () {
       iframe.style.height = 'calc(100vh - 158px)';
 
       w.appendChild(iframe);
-      console.log("Appended iframe:", iframe);
+      console.log("Appended new iframe:", iframe);
 
       if (iframe.contentWindow !== null) {
         iframes.set(iframe.contentWindow, iframe);
