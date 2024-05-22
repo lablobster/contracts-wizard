@@ -37,8 +37,16 @@ onDOMContentLoaded(function () {
 
   if (wizards.length > 0) {
     const w = wizards[0];
-    console.log('w', w)
+    console.log('w', w);
+
     if (w) {
+      // Verifique se já existe um iframe dentro do elemento oz-wizard
+      const existingIframe = w.querySelector('iframe');
+      if (existingIframe) {
+        console.log("Iframe already exists:", existingIframe);
+        return;
+      }
+
       w.style.display = 'block';
 
       const src = new URL('embed', currentScript.origin);
