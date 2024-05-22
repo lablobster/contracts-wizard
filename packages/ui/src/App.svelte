@@ -1,16 +1,16 @@
 <script lang="ts">
   import type {
-      Contract,
-      Kind,
-      KindedOptions,
-      OptionsErrorMessages,
+    Contract,
+    Kind,
+    KindedOptions,
+    OptionsErrorMessages,
   } from "@openzeppelin/wizard";
   import {
-      ContractBuilder,
-      OptionsError,
-      buildGeneric,
-      printContract,
-      sanitizeKind,
+    ContractBuilder,
+    OptionsError,
+    buildGeneric,
+    printContract,
+    sanitizeKind,
   } from "@openzeppelin/wizard";
   import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
   import { saveAs } from "file-saver";
@@ -93,13 +93,16 @@
   const compileHandler = async () => {
     try {
       compiling = true;
-      const response = await fetch("https://api.metio.lat/compile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ code }),
-      });
+      const response = await fetch(
+        "https://wizard-compiler.vercel.app/compile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code }),
+        }
+      );
 
       if (response.ok) {
         const compiledContract = await response.json();
