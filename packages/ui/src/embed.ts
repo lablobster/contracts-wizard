@@ -8,8 +8,25 @@ const currentScript = new URL(document.currentScript.src);
 
 const iframes = new WeakMap<MessageEventSource, HTMLIFrameElement>();
 
+let iframeCreated = false; // Flag global para proteger contra múltiplas execuções
+
+function onDOMContentLoaded(callback: () => void) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', callback);
+  } else {
+    callback();
+  }
+}
+
 onDOMContentLoaded(function () {
+  // Proteção contra múltiplas execuções
+  if (iframeCreated) {
+    console.log("Iframe já criado, abortando a criação duplicada.");
+    return;
+  }
+
   const wizards = document.querySelectorAll<HTMLElement>('oz-wizard');
+  console.log("Found oz-wizard elements:", wizards);
 
   if (wizards.length > 0) {
     const w = wizards[0];
@@ -27,9 +44,9 @@ onDOMContentLoaded(function () {
 
       const src = new URL('embed', currentScript.origin);
 
-      // setSearchParam(w, src.searchParams, 'data-lang', 'lang');
-      // setSearchParam(w, src.searchParams, 'data-tab', 'tab');
-      // setSearchParam(w, src.searchParams, 'version', 'version');
+      setSearchParam(w, src.searchParams, 'data-lang', 'lang');
+      setSearchParam(w, src.searchParams, 'data-tab', 'tab');
+      setSearchParam(w, src.searchParams, 'version', 'version');
       const sync = w.getAttribute('data-sync-url');
 
       if (sync === 'fragment') {
@@ -53,6 +70,9 @@ onDOMContentLoaded(function () {
         iframes.set(iframe.contentWindow, iframe);
       }
 
+      // Marca que o iframe foi criado para evitar execuções futuras
+      iframeCreated = true;
+
       if (sync === 'fragment') {
         window.addEventListener('message', (e: MessageEvent<Message>) => {
           if (e.source && e.data.kind === 'oz-wizard-tab-change') {
@@ -71,19 +91,10 @@ onDOMContentLoaded(function () {
   }
 });
 
-
 function setSearchParam(w: HTMLElement, searchParams: URLSearchParams, dataParam: string, param: string) {
   const value = w.getAttribute(dataParam) ?? w.getAttribute(param);
   if (value) {
     searchParams.set(param, value);
-  }
-}
-
-function onDOMContentLoaded(callback: () => void) {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', callback);
-  } else {
-    callback();
   }
 }
 
