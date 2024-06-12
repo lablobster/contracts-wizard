@@ -89,10 +89,15 @@
 
   let compiledBytecode: string | undefined;
   let compiledAbi: any[] | undefined;
+  let constructorArgs: any[] | undefined;
 
   const compileHandler = async () => {
     try {
       compiling = true;
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const userAddress = await signer.getAddress();
       const response = await fetch(
         "https://wizard-compiler.vercel.app/compile",
         {
@@ -100,7 +105,7 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ code }),
+          body: JSON.stringify({ code, address: userAddress }),
         }
       );
 
@@ -109,8 +114,9 @@
         console.log("Compilation successful", compiledContract);
 
         // Save the bytecode and ABI in variables
-        compiledBytecode = compiledContract.evm.bytecode.object;
+        compiledBytecode = compiledContract.deployData;
         compiledAbi = compiledContract.abi;
+        constructorArgs = compiledContract.constructorArgs;
         compiled = true;
         compiling = false;
       } else {
@@ -151,7 +157,13 @@
         compiledBytecode,
         signer
       );
-      const contract = await factory.deploy({ gasLimit });
+
+      let contract;
+      if (constructorArgs && constructorArgs.length > 0) {
+        contract = await factory.deploy(...constructorArgs, { gasLimit });
+      } else {
+        contract = await factory.deploy({ gasLimit });
+      }
       await contract.waitForDeployment();
 
       deploying = false;
